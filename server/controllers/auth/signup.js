@@ -1,6 +1,6 @@
 import User from '../../models/userModel.js';
 import bcryptjs from 'bcryptjs';
-export const signup = async (req, res) => {
+const signup = async (req, res) => {
   try {
     const {
       firstName,
@@ -57,3 +57,5 @@ export const signup = async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 };
+
+export default signup;
