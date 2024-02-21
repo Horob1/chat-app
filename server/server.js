@@ -4,6 +4,7 @@ import cors from 'cors';
 import connectToDB from './db/connectToDB.js';
 import authRoutes from './routes/authRoutes.js';
 import messageRoutes from './routes/messageRoutes.js';
+import conversationRoutes from './routes/conversationRoutes.js';
 import morgan from 'morgan';
 import cookieParser from 'cookie-parser';
 
@@ -18,7 +19,7 @@ const port = process.env.PORT || 5000;
 
 app.use('/api/auth', authRoutes);
 app.use('/api/message', messageRoutes);
-
+app.use('/api/conversation', conversationRoutes);
 app.listen(port, (req, res) => {
   connectToDB();
   console.log('Server running on port ' + port);
