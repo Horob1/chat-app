@@ -1,6 +1,5 @@
 import Message from '../../models/messageModel.js';
 import Conversation from './../../models/conversationModel.js';
-import Message from './../../models/messageModel.js';
 const sendMessage = async (req, res) => {
   try {
     const { message } = req.body;

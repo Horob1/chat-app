@@ -1,24 +1,16 @@
 import Conversation from '../../models/conversationModel.js';
-import Message from '../../models/messageModel.js';
 
 const getConversation = async (req, res, next) => {
   try {
-    const conversationId = req.params.conversationId;
-    const conversation = await Conversation.findById(
-      conversationId
-    );
-    if (!conversation) {
-      return res.status(404).json({
-        error: 'Conversation not found',
-      });
-    }
-    const messages = await Message.find({
-      conversationId: conversation._id,
+    const userId = req.user._id;
+    const conversations = await Conversation.find({
+      participants: userId,
     });
-    if (!messages)
-      return res.status(200).json({ conversation: [] });
-    return res.status(200).json({ conversation: messages });
-  } catch (error) {}
+
+    res.status(200).json(conversations);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
 };
 
 export default getConversation;

@@ -5,6 +5,6 @@ import getConversation from '../controllers/conversation/getConversation.js';
 const router = express.Router();
 
 router.use(protectRoute);
-router.get('/get/:conversationId', getConversation);
+router.get('/', getConversation);
 
 export default router;
