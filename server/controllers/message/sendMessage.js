@@ -1,38 +1,40 @@
 import Message from '../../models/messageModel.js';
 import Conversation from './../../models/conversationModel.js';
+import Message from './../../models/messageModel.js';
 const sendMessage = async (req, res) => {
   try {
-    const { message, conversationId, receiverId } =
-      req.body;
+    const { message } = req.body;
     const senderId = req.user._id;
-    let conversation;
-    if (conversationId)
-      conversation = await Conversation.findById(
-        conversationId
-      );
-    if (!conversation || !conversationId) {
-      conversation = new Conversation({
+    const receiverId = req.params.id;
+
+    let conversation = await Conversation.findOne({
+      participants: {
+        $all: [senderId, receiverId],
+      },
+    });
+
+    if (!conversation) {
+      conversation = await Conversation.create({
         participants: [senderId, receiverId],
-        isChatGroup: false,
       });
-      await conversation.save();
     }
+
     const newMessage = new Message({
-      senderId,
-      conversationId: conversation?._id,
       message,
-      conversation,
+      senderId,
+      receiverId,
     });
     await newMessage.save();
-    if (conversationId && conversation)
-      return res.status(201).json({
-        message: newMessage,
-      });
-    else
-      return res.status(201).json({
-        message: newMessage,
-        conversation: conversation,
-      });
+
+    if (newMessage) {
+      conversation.messages.push(newMessage);
+    }
+
+    await conversation.save();
+
+    res.status(201).json({
+      newMessage: newMessage,
+    });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
